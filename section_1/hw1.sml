@@ -1,5 +1,4 @@
-type date = int * int * int;
-val is_older = fn (a: date, b: date) => 
+val is_older = fn (a: int * int * int, b: int * int * int) => 
     if #1(a) < #1(b) then true
     else if #1(a) > #1(b) then false
     else if #2(a) < #2(b) then true
@@ -12,20 +11,20 @@ fun number_in_month_a ([], b, count) = 0
     if #2(x) = b then number_in_month_a(xs, b, count + 1)
     else number_in_month_a(xs, b, count);
 
-fun number_in_month (a: date list, b: int) = number_in_month_a(a, b, 0);
+fun number_in_month (a: (int * int * int) list, b: int) = number_in_month_a(a, b, 0);
 
-fun number_in_month_b (a: date list, [], count) = 0
+fun number_in_month_b (a: (int * int * int) list, [], count) = 0
 |   number_in_month_b (a, x::xs: int list, count) =
         number_in_month_b(a, xs, count + number_in_month(a, x));
     
-fun number_in_month (a: date list, b: int list) = number_in_month_b(a, b, 0);
+fun number_in_month (a: (int * int * int) list, b: int list) = number_in_month_b(a, b, 0);
 
 fun date_in_month ([], b) = []
-|   date_in_month (x::xs: date list, b: int) =
+|   date_in_month (x::xs: (int * int * int) list, b: int) =
     if #2(x) = b then x :: date_in_month(xs, b)
     else date_in_month(xs, b);
 
-fun date_in_months (a: date list, []) = []
+fun date_in_months (a: (int * int * int) list, []) = []
 |   date_in_months (a, x::xs: int list) = date_in_month(a, x) @ date_in_months(a, xs);
 
 fun get_nth([], n) = ""
@@ -37,12 +36,12 @@ fun get_nth_month(n) =
         get_nth(l, n)
     end;
 
-fun date_to_string(a: date) =
+fun date_to_string(a: int * int * int) =
     get_nth_month(#2(a)) ^ " " ^ Int.toString(#3(a)) ^ ", " ^ Int.toString(#1(a));
 
 fun number_before_reaching_sum(a: int, []) = 0
 | number_before_reaching_sum(a: int, x::xs:int list) =
-    if a <= 0 then 0
+    if a <= x then 0
     else number_before_reaching_sum(a-x, xs) + 1;
 
 fun what_month(a) = 
