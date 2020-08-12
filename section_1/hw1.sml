@@ -7,7 +7,7 @@ val is_older = fn (a: int * int * int, b: int * int * int) =>
     else false;
 
 fun number_in_month_a ([], b, count) = 0
-| number_in_month_a (x::xs: date list, b, count) =
+| number_in_month_a (x::xs: (int * int * int) list, b, count) =
     if #2(x) = b then number_in_month_a(xs, b, count + 1)
     else number_in_month_a(xs, b, count);
 
