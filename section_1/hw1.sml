@@ -17,14 +17,14 @@ fun number_in_month_b (a: (int * int * int) list, [], count) = 0
 |   number_in_month_b (a, x::xs: int list, count) =
         number_in_month_b(a, xs, count + number_in_month(a, x));
     
-fun number_in_month (a: (int * int * int) list, b: int list) = number_in_month_b(a, b, 0);
+fun number_in_months (a: (int * int * int) list, b: int list) = number_in_month_b(a, b, 0);
 
-fun date_in_month ([], b) = []
+fun dates_in_month ([], b) = []
 |   date_in_month (x::xs: (int * int * int) list, b: int) =
     if #2(x) = b then x :: date_in_month(xs, b)
     else date_in_month(xs, b);
 
-fun date_in_months (a: (int * int * int) list, []) = []
+fun dates_in_months (a: (int * int * int) list, []) = []
 |   date_in_months (a, x::xs: int list) = date_in_month(a, x) @ date_in_months(a, xs);
 
 fun get_nth([], n) = ""
@@ -46,7 +46,7 @@ fun number_before_reaching_sum(a: int, []) = 0
 
 fun what_month(a) = 
     let val l = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] in
-        number_before_reaching_sum(a, l)
+        number_before_reaching_sum(a, l) + 1
     end;
 
 fun month_range(s, e) =
