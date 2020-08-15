@@ -6,26 +6,26 @@ val is_older = fn (a: int * int * int, b: int * int * int) =>
     else if #3(a) < #3(b) then true
     else false;
 
-fun number_in_month_a ([], b, count) = 0
+fun number_in_month_a ([], b, count) = count
 | number_in_month_a (x::xs: (int * int * int) list, b, count) =
     if #2(x) = b then number_in_month_a(xs, b, count + 1)
     else number_in_month_a(xs, b, count);
 
 fun number_in_month (a: (int * int * int) list, b: int) = number_in_month_a(a, b, 0);
 
-fun number_in_month_b (a: (int * int * int) list, [], count) = 0
+fun number_in_month_b (a: (int * int * int) list, [], count) = count
 |   number_in_month_b (a, x::xs: int list, count) =
         number_in_month_b(a, xs, count + number_in_month(a, x));
     
 fun number_in_months (a: (int * int * int) list, b: int list) = number_in_month_b(a, b, 0);
 
 fun dates_in_month ([], b) = []
-|   date_in_month (x::xs: (int * int * int) list, b: int) =
-    if #2(x) = b then x :: date_in_month(xs, b)
-    else date_in_month(xs, b);
+|   dates_in_month (x::xs: (int * int * int) list, b: int) =
+    if #2(x) = b then x :: dates_in_month(xs, b)
+    else dates_in_month(xs, b);
 
 fun dates_in_months (a: (int * int * int) list, []) = []
-|   date_in_months (a, x::xs: int list) = date_in_month(a, x) @ date_in_months(a, xs);
+|   dates_in_months (a, x::xs: int list) = dates_in_month(a, x) @ dates_in_months(a, xs);
 
 fun get_nth([], n) = ""
 | get_nth(x::xs, n) = if n = 1 then x else get_nth(xs, n - 1);
