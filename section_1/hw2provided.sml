@@ -19,8 +19,19 @@ fun all_except_option (s : string, l: string list) =
    in 
       f(s, [], l)
    end;
-
 fun get_substitutions1(l : string list list, s : string) =
+   case l of
+   [] => []
+   |s1::xs => 
+      let 
+         val x = all_except_option(s, s1)
+      in
+         case x of
+         NONE => get_substitutions1(xs, s)
+         |SOME(tmpl) => tmpl @ get_substitutions1(xs, s)
+      end;
+
+fun get_substitutions2(l : string list list, s : string) =
    let
      fun f (l1, l2, s) = 
        case l2 of
@@ -31,8 +42,7 @@ fun get_substitutions1(l : string list list, s : string) =
          in
             case x of
             NONE => f(l1, xs, s)
-            | SOME([]) => f(l1, xs, s)
-            | SOME(tmpl) => f(l1 @ [tmpl], xs, s)
+            | SOME(tmpl) => f(l1 @ tmpl, xs, s)
          end 
    in
      f([], l, s)
