@@ -61,3 +61,21 @@ fun longest_string2 xs =
 	in
 		s
 	end;
+
+fun longest_string_helper f xs =
+	let val (s, _) =
+		foldl (fn (x,(x1, len)) => 
+				if f (String.size(x),String.size(x1))
+				then (x, String.size(x))
+				else (x1, len))
+			("", 0)
+			xs
+	in
+		s
+	end;
+
+fun longest_string3 xs =
+	longest_string_helper (fn (x, y) => x > y) xs;
+
+fun longest_string4 xs =
+	longest_string_helper (fn (x, y) => x >= y) xs;
