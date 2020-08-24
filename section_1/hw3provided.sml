@@ -74,8 +74,6 @@ fun longest_string_helper f xs =
 		s
 	end;
 
-fun longest_string3 xs =
-	longest_string_helper (fn (x, y) => x > y) xs;
+val longest_string3 = longest_string_helper (fn (x, y) => x > y);
 
-fun longest_string4 xs =
-	longest_string_helper (fn (x, y) => x >= y) xs;
+val longest_string4 = longest_string_helper (fn (x, y) => x >= y);
