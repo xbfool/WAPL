@@ -81,3 +81,25 @@ val longest_string4 = longest_string_helper (fn (x, y) => x >= y);
 val longest_capitalized = longest_string3 o only_capitals;
 
 val rev_string = String.implode o List.rev o String.explode;
+
+fun first_answer f xs =
+	let
+		val x = foldl (fn (x, a) =>
+					case a of
+					NONE => x
+					|_ => a) NONE (map f xs)
+	in
+		case x of
+		NONE => raise NoAnswer
+		|SOME a => a
+	end;
+
+fun all_answers f xs =
+	foldl (fn (x, a) => 
+		case x of
+		NONE => a
+		|SOME lst => 
+			case a of
+			NONE => SOME [lst]
+			|SOME lsts => SOME (lst::lsts))
+		NONE (map f xs)
