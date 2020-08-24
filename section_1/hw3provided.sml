@@ -127,3 +127,18 @@ fun count_some_var (s, p)=
 	in
 		g f1 f2 p
 	end;
+
+fun g1 p =
+	case p of
+	    Wildcard          => []
+	  | Variable x        => [x]
+	  | TupleP ps         => List.foldl (fn (p,i) => (g1 p) @ i) [] ps
+	  | ConstructorP(_,p) => g1 p
+	  | _                 => [];
+
+fun check_pat p = 
+	let 
+		val l = g1 p
+	in
+		foldl (fn (s,i) => i andalso count_some_var(s,p) = 1) true l 
+	end
