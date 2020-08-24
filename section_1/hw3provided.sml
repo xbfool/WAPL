@@ -102,4 +102,28 @@ fun all_answers f xs =
 			case a of
 			NONE => SOME [lst]
 			|SOME lsts => SOME (lst::lsts))
-		NONE (map f xs)
+		NONE (map f xs);
+
+val count_wildcards = 
+	let 
+		fun f1 () = 1
+		fun f2 x = 0
+	in
+		g f1 f2 
+	end;
+
+val count_wild_and_variable_lengths = 
+	let 
+		fun f1 () = 1
+		fun f2 x = String.size(x)
+	in
+		g f1 f2 
+	end;
+
+fun count_some_var (s, p)=
+	let 
+		fun f1 () = 1
+		fun f2 x = if x = s then 1 else 0
+	in
+		g f1 f2 p
+	end;
