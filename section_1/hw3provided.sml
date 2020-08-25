@@ -122,7 +122,7 @@ val count_wild_and_variable_lengths =
 
 fun count_some_var (s, p)=
 	let 
-		fun f1 () = 1
+		fun f1 () = 0
 		fun f2 x = if x = s then 1 else 0
 	in
 		g f1 f2 p
