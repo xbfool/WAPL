@@ -156,4 +156,12 @@ fun match (v, p): (string * valu) list option =
 		else NONE 
 	|(ConstructorP(sp, p1), Constructor(sv, v1)) =>
 		if sp = sv then match (v1, p1) else NONE
-	|_ => NONE
+	|_ => NONE;
+
+fun first_match v ps =
+	let 
+	val x = first_answer match (map (fn x => (v, x)) ps)
+	in 
+		SOME x
+	end
+	handle NoAnswer => NONE
