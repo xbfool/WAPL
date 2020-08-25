@@ -100,8 +100,8 @@ fun all_answers f xs =
 		NONE => a
 		|SOME lst => 
 			case a of
-			NONE => SOME [lst]
-			|SOME lsts => SOME (lst::lsts))
+			NONE => SOME lst
+			|SOME lsts => SOME (lst@lsts))
 		NONE (map f xs);
 
 val count_wildcards = 
@@ -141,4 +141,19 @@ fun check_pat (p) =
 		val l = g1 p
 	in
 		foldl (fn (s,i) => i andalso count_some_var(s,p) = 1) true l 
-	end
+	end;
+
+fun match (v, p): (string * valu) list option =
+	case (p, v) of
+	(Wildcard, _) => SOME []
+	|(Variable(va), _) => SOME [(va, v)]
+	|(UnitP, Unit) => SOME []
+	|(ConstP(va),Const(vb)) => 
+		if va = vb then SOME [] else NONE
+	|(TupleP(ps),Tuple(vs)) =>
+		if length(ps) = length(vs) 
+		then all_answers match (ListPair.zip(vs, ps))
+		else NONE 
+	|(ConstructorP(sp, p1), Constructor(sv, v1)) =>
+		if sp = sv then match (v1, p1) else NONE
+	|_ => NONE
