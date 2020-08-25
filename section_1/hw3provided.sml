@@ -128,7 +128,7 @@ fun count_some_var (s, p)=
 		g f1 f2 p
 	end;
 
-fun g1 p =
+fun g1 (p) =
 	case p of
 	    Wildcard          => []
 	  | Variable x        => [x]
@@ -136,7 +136,7 @@ fun g1 p =
 	  | ConstructorP(_,p) => g1 p
 	  | _                 => [];
 
-fun check_pat p = 
+fun check_pat (p) = 
 	let 
 		val l = g1 p
 	in
