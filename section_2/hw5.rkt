@@ -77,9 +77,20 @@
                     (int? v2))
                (eval-under-env body (cons (cons v1 v2) env))
                (error "MUPL mlet error")))]
-                    
-               
-           
+      ;  [(closure? e) e]
+        [(call? e)
+         (let ([c (call-funexp e)]
+               [a (eval-under-env (call-actual e) env)])
+           (if (closure? c)
+               (let* ([f-env (closure-env c)]
+                     [f (closure-fun c)]
+                     [name (fun-nameopt f)]
+                     [formal (fun-formal f)]
+                     [body (fun-body f)])
+                 (eval-under-env
+                  (mlet formal a body) f-env))
+               (error "MUPL call error")))]
+                     
          
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
