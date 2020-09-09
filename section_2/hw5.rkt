@@ -47,9 +47,9 @@
 ;; "in real life" it would be a helper function of eval-exp.
 (define (eval-under-env e env)
   ;(println "e:")
- ; (println e)
- ; (println "env:")
- ; (println env)
+  ;(println e)
+  ;(println "env:")
+  ;(println env)
   (cond [(var? e) (eval-under-env (envlookup env (var-string e)) env)]
         [(string? e) e]
         [(add? e) 
@@ -105,12 +105,12 @@
          (let ([v1 (eval-under-env (fst-e e) env) ])
            (if (apair? v1)
                (apair-e1 v1)
-               (error "MUPL fst error")))]
+               (error "MUPL fst error" e)))]
         [(snd? e)
          (let ([v1 (eval-under-env (snd-e e) env)])
            (if (apair? v1)
                (apair-e2 v1)
-               (error "MUPL snd error")))]
+               (error "MUPL snd error" e)))]
         [(isaunit? e)
          (let ([v (eval-under-env (isaunit-e e) env)])
            (if (aunit? v)
@@ -158,13 +158,14 @@
 
 ;; Problem 4
 
-;(define mupl-map
-;  (fun #f "fp1"
-;    (fun "f1" "fp2" ; fp2: (apair list acc)
-;         (if (aunit? (fst (var "fp2")))
-  ;           (snd  (var "fp2"))
-  ;           (apair (call (var "fp1") (snd (fst  (var "fp2"))))
-   ;                 (call (var "f1") (snd (var "fp2"))))))))
+(define mupl-map
+  (fun #f "fp1"
+  (fun "f1" "fp2" 
+       (ifaunit
+        (var "fp2")
+        (aunit)
+        (apair (call (var "fp1")  (fst  (var "fp2")))
+               (call (var "f1") (snd (var "fp2"))))))))
                   
               
       
