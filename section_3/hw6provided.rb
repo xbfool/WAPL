@@ -178,12 +178,7 @@ class Board
     draw
   end
 
-  def flip
-    if !game_over? and @game.is_running?
-      @current_block.move(0, 0, 2)
-    end
-    draw
-  end
+
   
   # drops the piece to the lowest location in the currently occupied columns.
   # Then replaces it with a new piece
@@ -314,7 +309,7 @@ class Tetris
     
     @root.bind('space' , proc {@board.drop_all_the_way}) 
 
-    @root.bind('u', proc{@board.flip})
+    
   end
 
   def buttons
