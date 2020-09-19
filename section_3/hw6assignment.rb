@@ -7,7 +7,7 @@ class MyPiece < Piece
   # The constant All_My_Pieces should be declared here
 
   # your enhancements here
-  All_Pieces = #All_Pieces +
+  All_Pieces = All_Pieces +
     [rotations([[0, 0], [1, 0], [0, 1], [1, 1], [2,1]]),
     [[[0, 0], [-2, 0], [-1, 0], [1, 0], [2, 0]], # long (only needs two)
     [[0, 0], [0, -1], [0,-2], [0, 1], [0, 2]]],
@@ -16,6 +16,10 @@ class MyPiece < Piece
 
   def self.next_piece (board)
     Piece.new(All_Pieces.sample, board)
+  end
+
+  def self.cheat_piece(board)
+    Piece.new([[0,0]], board)
   end
 end
 
@@ -27,7 +31,9 @@ class MyBoard < Board
     @score = 0
     @game = game
     @delay = 500
+    @start_cheat = false
   end
+
   def flip
     if !game_over? and @game.is_running?
       @current_block.move(0, 0, 2)
@@ -35,8 +41,23 @@ class MyBoard < Board
     draw
   end
 
+  def cheat
+    if @start_cheat
+      return
+    end
+    if @score >= 100
+      @start_cheat = true
+      @score -= 100
+    end
+  end
+
   def next_piece
-    @current_block = MyPiece.next_piece(self)
+    if @start_cheat
+      @current_block = MyPiece.cheat_piece(self)
+      @start_cheat = false
+    else
+      @current_block = MyPiece.next_piece(self)
+    end
     @current_pos = nil
   end
 
@@ -76,6 +97,7 @@ class MyTetris < Tetris
 
   def key_bindings_1
     @root.bind('u', proc{@board.flip})
+    @root.bind('c', proc{@board.cheat})
   end
 end
 
