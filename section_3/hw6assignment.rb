@@ -7,7 +7,7 @@ class MyPiece < Piece
   # The constant All_My_Pieces should be declared here
 
   # your enhancements here
-  All_Pieces = All_Pieces +
+  All_My_Pieces = All_Pieces +
     [rotations([[0, 0], [1, 0], [0, 1], [1, 1], [2,1]]),
     [[[0, 0], [-2, 0], [-1, 0], [1, 0], [2, 0]], # long (only needs two)
     [[0, 0], [0, -1], [0,-2], [0, 1], [0, 2]]],
@@ -15,11 +15,11 @@ class MyPiece < Piece
     ]
 
   def self.next_piece (board)
-    Piece.new(All_Pieces.sample, board)
+    Piece.new(All_My_Pieces.sample, board)
   end
 
   def self.cheat_piece(board)
-    Piece.new([[0,0]], board)
+    Piece.new([[[0,0]]], board)
   end
 end
 
