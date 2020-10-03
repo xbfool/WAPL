@@ -200,7 +200,7 @@ class Line < GeometryValue
         NoPoints.new()
       end
     else
-      x = (line.b - @b) / (line.m - @m)
+      x = (line.b - @b) / (@m - line.m)
       y = @m * x + @b
       Point.new(x, y)
     end
@@ -275,6 +275,17 @@ class LineSegment < GeometryValue
     self
   end
   
+  def intersectPoint p
+    intersect p
+  end
+  def intersectLine line
+    intersect line
+  end
+  def intersectVerticalLine vline
+    intersect vline
+    
+  end
+
   def preprocess_prog
     if real_close_point(@x1, @y1, @x2, @y2)
       Point.new(@x1, @y1)

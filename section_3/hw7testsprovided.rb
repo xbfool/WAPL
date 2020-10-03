@@ -134,6 +134,8 @@ if not (i1.x1 == -ONE and i1.y1 == -TWO and i1.x2 == THREE and i1.y2 == FOUR)
 	puts "Intersect eval_prog should return the intersect between e1 and e2"
 end
 
+
+
 #Var Tests
 v = Var.new("a")
 v1 = v.eval_prog([["a", Point.new(THREE,FIVE)]])
@@ -170,3 +172,4 @@ end
 
 aa = NoPoints.new()
 print(aa)
+
