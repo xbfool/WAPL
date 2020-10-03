@@ -218,8 +218,12 @@ fun preprocess_prog (e) =
 	| LineSegment(x1, y1, x2, y2) =>
 		if real_close_point (x1, y1) (x2, y2)
 		then Point (x1, y1)
-		else if real_close(x1, x2) andalso y2 < y1
-		then LineSegment(x2, y2, x1, y1)
+		else if real_close(x1, x2)
+		then
+			if y2 < y1
+			then LineSegment(x2, y2, x1, y1)
+			else
+			e
 		else if x2 < x1
 		then LineSegment(x2, y2, x1, y1)
 		else e

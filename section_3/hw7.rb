@@ -354,7 +354,7 @@ class Intersect < GeometryExpression
   def eval_prog env
     x1 = @e1.eval_prog(env)
     x2 = @e2.eval_prog(env)
-    x1.intersectLineSegment x2
+    x1.intersect x2
   end
 
   def preprocess_prog
