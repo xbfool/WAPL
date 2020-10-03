@@ -77,7 +77,33 @@ class NoPoints < GeometryValue
   # However, you *may* move methods from here to a superclass if you wish to
 
   # Note: no initialize method only because there is nothing it needs to do
-v
+  def eval_prog env 
+    self # all values evaluate to self
+  end
+  def preprocess_prog
+    self # no pre-processing to do here
+  end
+  def shift(dx,dy)
+    self # shifting no-points is no-points
+  end
+  def intersect other
+    other.intersectNoPoints self # will be NoPoints but follow double-dispatch
+  end
+  def intersectPoint p
+    self # intersection with point and no-points is no-points
+  end
+  def intersectLine line
+    self # intersection with line and no-points is no-points
+  end
+  def intersectVerticalLine vline
+    self # intersection with line and no-points is no-points
+  end
+  # if self is the intersection of (1) some shape s and (2) 
+  # the line containing seg, then we return the intersection of the 
+  # shape s and the seg.  seg is an instance of LineSegment
+  def intersectWithSegmentAsLineResult seg
+    self
+  end
 end
 
 
@@ -97,7 +123,7 @@ class Point < GeometryValue
   def eval_prog env 
     self
   end
-  #todo
+
   def preprocess_prog
     self
   end
@@ -130,7 +156,7 @@ class Point < GeometryValue
   end
 
   def intersectWithSegmentAsLineResult seg
-    if @x >= seg.x1 @and @x <= seg.x2
+    if @x >= seg.x1 and @x <= seg.x2
       self
     else
       NoPoints.new()
@@ -152,7 +178,7 @@ class Line < GeometryValue
   def eval_prog env 
     self
   end
-  #todo
+
   def preprocess_prog
     self
   end
@@ -200,7 +226,7 @@ class VerticalLine < GeometryValue
   def eval_prog env 
     self 
   end
-  #todo
+
   def preprocess_prog
     self 
   end
@@ -218,7 +244,7 @@ class VerticalLine < GeometryValue
     intersect line
   end
   def intersectVerticalLine vline
-    if real_close(@x vline.x)
+    if real_close(@x, vline.x)
       VerticalLine.new(@x)
     else
       NoPoints.new()
@@ -248,9 +274,23 @@ class LineSegment < GeometryValue
   def eval_prog env 
     self
   end
-  #todo
+  
   def preprocess_prog
-    self
+    if real_close_point(@x1, @y1, @x2, @y2)
+      Point.new(@x1, @y1)
+    else
+      if real_close(@x1, @x2)
+        if @y1 > @y2
+          LineSegment.new(@x2, @y2, @x1, @y1)
+        else
+          self
+        end
+      elsif @x1 > @x2
+        LineSegment.new(@x2, @y2, @x1, @y1)
+      else
+        self
+      end
+    end
   end
 
   def shift(dx,dy)
@@ -259,6 +299,8 @@ class LineSegment < GeometryValue
   def intersect other
     other.intersectLineSegment self
   end
+
+
 
   def intersectWithSegmentAsLineResult seg
     if real_close(@x1, @x2)
@@ -288,9 +330,9 @@ class LineSegment < GeometryValue
 
       if real_close(s1.y2, s2.y1)
         Point.new(s1.x2, s1.y2)
-      elsif s1.x2 < s2.s1
+      elsif s1.x2 < s2.x1
         NoPoints.new()
-      elsif s1.x2 > s2.s2
+      elsif s1.x2 > s2.x2
         s2
       else
         LineSegment.new(s2.x1, s2.y1, s1.x2, s1.y2)
@@ -308,6 +350,16 @@ class Intersect < GeometryExpression
     @e1 = e1
     @e2 = e2
   end
+
+  def eval_prog env
+    x1 = @e1.eval_prog(env)
+    x2 = @e2.eval_prog(env)
+    x1.intersectLineSegment x2
+  end
+
+  def preprocess_prog
+    Intersect.new(@e1.preprocess_prog(), @e2.preprocess_prog())
+  end
 end
 
 class Let < GeometryExpression
@@ -318,6 +370,17 @@ class Let < GeometryExpression
     @s = s
     @e1 = e1
     @e2 = e2
+  end
+
+  def eval_prog env
+    env1 = env.clone
+    x = @e1.eval_prog(env)
+    env1.unshift([@s, x])
+    @e2.eval_prog(env1)
+  end
+  
+  def preprocess_prog
+    Let.new(@s, @e1.preprocess_prog(), @e2.preprocess_prog()) 
   end
 end
 
@@ -332,6 +395,10 @@ class Var < GeometryExpression
     raise "undefined variable" if pr.nil?
     pr[1]
   end
+
+  def preprocess_prog
+    self 
+  end
 end
 
 class Shift < GeometryExpression
@@ -341,5 +408,14 @@ class Shift < GeometryExpression
     @dx = dx
     @dy = dy
     @e = e
+  end
+
+  def eval_prog env
+    x = @e.eval_prog(env)
+    x.shift(@dx, @dy)
+  end
+
+  def preprocess_prog
+    Shift.new(@dx, @dy, @e.preprocess_prog()) 
   end
 end
